@@ -1,18 +1,8 @@
-import os
-import time
-
-from flask import Flask
-from flask import render_template, Response, request, send_from_directory, flash, url_for
-from flask import current_app as app
-from werkzeug.utils import secure_filename
-
-from src.lstm import ActionClassificationLSTM
-from src.video_analyzer import analyse_video, stream_video
-
-# import some common Detectron2 utilities
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
+
+from src.lstm import ActionClassificationLSTM
 
 import cv2
 
@@ -29,10 +19,12 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R
 pose_detector = DefaultPredictor(cfg)
 
 
+img = cv2.imread('team_photo.png')
 
-# Load pretrained LSTM model from checkpoint file
+poses = pose_detector(img)
+
+#this outputs the keypoints in format [x,y,confidence]
+print(poses['instances'].pred_keypoints)
+
 lstm_classifier = ActionClassificationLSTM.load_from_checkpoint("models/saved_model.ckpt")
-lstm_classifier = lstm_classifier.to('cuda')
-lstm_classifier.eval()
-
-analyse_video(pose_detector, lstm_classifier, "sample_video.mp4")
+print(type(lstm_classifier))

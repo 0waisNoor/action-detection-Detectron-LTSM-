@@ -69,7 +69,8 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
                 draw_keypoints(p, img)
                 # input feature array for lstm
                 features = []
-                # add pose estimate results to the feature array
+                # add pose estimate results to the feature array 
+                # in this case we are adding the x and y coordinates but leaving out the confidence rates 
                 for i, row in enumerate(p):
                     features.append(row[0])
                     features.append(row[1])
